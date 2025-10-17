@@ -16,11 +16,11 @@
             background: linear-gradient(135deg, #1a0b3d 0%, #2d1b69 50%, #1a0b3d 100%);
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             min-height: 100vh;
             padding: 20px;
             position: relative;
-            overflow: hidden;
+            overflow-y: auto;
         }
 
         body::before {
@@ -48,6 +48,8 @@
             width: 100%;
             position: relative;
             z-index: 1;
+            padding-top: 40px;
+            padding-bottom: 40px;
         }
 
         .logo-container {
@@ -153,7 +155,7 @@
         .tube-container {
             position: relative;
             width: 120px;
-            height: 800px;
+            height: 500px;
             margin: -20px auto 0;
         }
 
@@ -169,7 +171,7 @@
         .tube-inner {
             position: absolute;
             width: 70px;
-            height: 760px;
+            height: 460px;
             left: 50%;
             transform: translateX(-50%);
             top: 20px;
