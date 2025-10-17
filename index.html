@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MRR Goal Thermometer - Q4 2025</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a0b3d 0%, #2d1b69 50%, #1a0b3d 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(147, 51, 234, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(59, 130, 246, 0.3) 0%, transparent 50%);
+            animation: pulse-bg 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes pulse-bg {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+        }
+
+        .container {
+            text-align: center;
+            max-width: 1200px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #1a0b3d 0%, #2d1b69 100%);
+            border-radius: 28px;
+            padding: 18px;
+            box-shadow: 0 20px 60px rgba(147, 51, 234, 0.4);
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 20px 60px rgba(147, 51, 234, 0.4),
+                            0 0 40px rgba(147, 51, 234, 0.2);
+            }
+            50% {
+                box-shadow: 0 20px 80px rgba(147, 51, 234, 0.6),
+                            0 0 60px rgba(147, 51, 234, 0.4);
+            }
+        }
+
+        .logo svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .header {
+            color: white;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            font-size: 5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 2.5rem;
+            opacity: 0.95;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            color: #c7d2fe;
+        }
+
+        .thermometer-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .thermometer {
+            position: relative;
+            width: 180px;
+        }
+
+        .bulb {
+            width: 180px;
+            height: 180px;
+            background: linear-gradient(135deg, #ec4899 0%, #ef4444 100%);
+            border-radius: 50%;
+            position: relative;
+            margin: 0 auto;
+            box-shadow: 0 10px 40px rgba(255, 71, 87, 0.5),
+                        0 0 60px rgba(236, 72, 153, 0.3);
+            border: 8px solid white;
+            animation: bulb-glow 2s ease-in-out infinite;
+        }
+
+        @keyframes bulb-glow {
+            0%, 100% {
+                box-shadow: 0 10px 40px rgba(255, 71, 87, 0.5),
+                            0 0 60px rgba(236, 72, 153, 0.3);
+            }
+            50% {
+                box-shadow: 0 10px 60px rgba(255, 71, 87, 0.7),
+                            0 0 80px rgba(236, 72, 153, 0.5);
+            }
+        }
+
+        .tube-container {
+            position: relative;
+            width: 120px;
+            height: 800px;
+            margin: -20px auto 0;
+        }
+
+        .tube-outer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 60px 60px 0 0;
+            box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .tube-inner {
+            position: absolute;
+            width: 70px;
+            height: 760px;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 20px;
+            background: #f1f2f6;
+            border-radius: 35px 35px 0 0;
+            overflow: hidden;
+        }
+
+        .mercury {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: linear-gradient(to top, #ec4899 0%, #f472b6 50%, #fbbf24 100%);
+            transition: height 1s ease-out;
+            border-radius: 0 0 35px 35px;
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.5);
+        }
+
+        .scale {
+            position: absolute;
+            right: -180px;
+            top: 0;
+            height: 100%;
+        }
+
+        .scale-mark {
+            position: absolute;
+            right: 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .scale-line {
+            width: 30px;
+            height: 4px;
+            background: white;
+            border-radius: 2px;
+        }
+
+        .scale-label {
+            color: white;
+            font-size: 2rem;
+            font-weight: 600;
+            min-width: 120px;
+            text-align: left;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .current-value {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+            border-radius: 30px;
+            padding: 40px 60px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3),
+                        0 0 40px rgba(147, 51, 234, 0.2);
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .current-value h2 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #9333ea 0%, #6366f1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .current-value .amount {
+            font-size: 6rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1a0b3d 0%, #2d1b69 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .current-value .percentage {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .reward {
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.3) 0%, rgba(147, 51, 234, 0.3) 100%);
+            backdrop-filter: blur(10px);
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            border-radius: 25px;
+            padding: 40px;
+            color: white;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 40px rgba(236, 72, 153, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reward::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255, 255, 255, 0.1),
+                transparent
+            );
+            transform: rotate(45deg);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .reward h3 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .reward p {
+            font-size: 2.5rem;
+            opacity: 0.95;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        .controls {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .controls h3 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #1a0b3d 0%, #2d1b69 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .input-group input {
+            font-size: 2.5rem;
+            padding: 20px 30px;
+            border: 3px solid #dfe6e9;
+            border-radius: 15px;
+            width: 300px;
+            text-align: center;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #9333ea;
+            box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.2);
+        }
+
+        .input-group button {
+            font-size: 2.5rem;
+            padding: 20px 50px;
+            background: linear-gradient(135deg, #9333ea 0%, #6366f1 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(147, 51, 234, 0.4);
+        }
+
+        .input-group button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(147, 51, 234, 0.6);
+        }
+
+        .input-group button:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 3rem;
+            }
+
+            .header p {
+                font-size: 1.5rem;
+            }
+
+            .tube-container {
+                height: 500px;
+            }
+
+            .tube-inner {
+                height: 460px;
+            }
+
+            .scale-label {
+                font-size: 1.5rem;
+            }
+
+            .current-value .amount {
+                font-size: 4rem;
+            }
+
+            .reward h3 {
+                font-size: 2rem;
+            }
+
+            .reward p {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <div class="logo">
+                <img src="boostlylogo.png" alt="Boostly Logo" style="width: 100%; height: 100%; object-fit: contain;">
+            </div>
+        </div>
+
+        <div class="header">
+            <h1>Q4 2025 MRR Goal</h1>
+            <p>Path to Victory</p>
+        </div>
+
+        <div class="current-value">
+            <h2>Current MRR</h2>
+            <div class="amount" id="currentAmount">$0</div>
+            <div class="percentage" id="percentage">0%</div>
+        </div>
+
+        <div class="thermometer-container">
+            <div class="thermometer">
+                <div class="tube-container">
+                    <div class="tube-outer"></div>
+                    <div class="tube-inner">
+                        <div class="mercury" id="mercury"></div>
+                    </div>
+                    <div class="scale">
+                        <div class="scale-mark" style="top: 0;">
+                            <div class="scale-line"></div>
+                            <div class="scale-label">$105k</div>
+                        </div>
+                        <div class="scale-mark" style="top: 25%;">
+                            <div class="scale-line"></div>
+                            <div class="scale-label">$79k</div>
+                        </div>
+                        <div class="scale-mark" style="top: 50%;">
+                            <div class="scale-line"></div>
+                            <div class="scale-label">$53k</div>
+                        </div>
+                        <div class="scale-mark" style="top: 75%;">
+                            <div class="scale-line"></div>
+                            <div class="scale-label">$26k</div>
+                        </div>
+                        <div class="scale-mark" style="top: 100%;">
+                            <div class="scale-line"></div>
+                            <div class="scale-label">$0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bulb"></div>
+            </div>
+        </div>
+
+        <div class="reward">
+            <h3>🎉 Goal Reward</h3>
+            <p>Dec 22nd - Jan 5th OFF!</p>
+        </div>
+
+        <div class="controls">
+            <h3>Update Current MRR</h3>
+            <div class="input-group">
+                <input type="number" id="mrrInput" placeholder="Enter amount" value="0" step="1000">
+                <button onclick="updateMRR()">Update</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const GOAL = 105000;
+        let currentMRR = 0;
+
+        // Load saved MRR from localStorage
+        function loadMRR() {
+            const saved = localStorage.getItem('currentMRR');
+            if (saved) {
+                currentMRR = parseInt(saved);
+                updateDisplay();
+            }
+        }
+
+        function saveMRR() {
+            localStorage.setItem('currentMRR', currentMRR.toString());
+        }
+
+        function updateMRR() {
+            const input = document.getElementById('mrrInput');
+            const value = parseInt(input.value) || 0;
+
+            if (value < 0) {
+                alert('Please enter a positive number');
+                return;
+            }
+
+            currentMRR = value;
+            saveMRR();
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            // Update amount display
+            const amountEl = document.getElementById('currentAmount');
+            amountEl.textContent = '$' + (currentMRR / 1000).toFixed(0) + 'k';
+
+            // Update percentage
+            const percentage = Math.min((currentMRR / GOAL) * 100, 100);
+            const percentageEl = document.getElementById('percentage');
+            percentageEl.textContent = percentage.toFixed(1) + '% of goal';
+
+            // Update mercury height
+            const mercury = document.getElementById('mercury');
+            mercury.style.height = percentage + '%';
+
+            // Update input field
+            document.getElementById('mrrInput').value = currentMRR;
+
+            // Celebration effect when goal is reached
+            if (percentage >= 100) {
+                celebrate();
+            }
+        }
+
+        function celebrate() {
+            const reward = document.querySelector('.reward');
+            reward.style.animation = 'pulse 1s infinite';
+        }
+
+        // Keyboard support
+        document.getElementById('mrrInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                updateMRR();
+            }
+        });
+
+        // Add pulse animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize
+        loadMRR();
+    </script>
+</body>
+</html>
