@@ -16,10 +16,12 @@ A beautiful, animated thermometer display for tracking Q4 2025 MRR goals. This i
 - `boostlylogo.png` - Boostly logo image
 - `README.md` - Project documentation
 
-## Recent Changes (Jan 2025)
+## Recent Changes (Oct 2025)
 - Initial import from GitHub to Replit
 - Configured static file server workflow on port 5000
 - Added .gitignore for Replit-specific files
+- Made page scrollable for smaller screens while maintaining TV-optimized design
+- Thermometer height: 800px (optimized for TV displays)
 
 ## How to Run
 The application is served via a simple Python HTTP server on port 5000. The workflow automatically starts the server when the Repl runs.
